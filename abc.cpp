@@ -1,23 +1,31 @@
 #include <iostream>
 using namespace std;
+#if 1
 class base
 {
-   int i,j;
-   public:
-   void set(int a, int b){i=a, j=b;}
-   void show(){cout<< i << " " << j << "\n";}
+   int i, j;
+
+public:
+   void set(int a, int b) { i = a, j = b; }
+   void show() { cout << i << " " << j << "\n"; }
 };
 class derived : public base
 {
    int k;
-   public:
+
+public:
    derived(int x)
-   {  k=x;   }
-   void showk(){cout<< k << " " << "\n";} 
+   {
+      k = x;
+   }
+   void showk() { cout << k << " "
+                       << "\n"; }
 };
-int main() {
+int main()
+{
    derived ob(3);
-   ob.set(1,2);
+   ob.set(1, 2);
    ob.show();
    ob.showk();
 }
+#endif
