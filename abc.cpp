@@ -3,7 +3,10 @@ using namespace std;
 #if 1
 class base
 {
-   int i, j;
+   int j;
+
+protected:
+   int i;
 
 public:
    void set(int a, int b) { i = a, j = b; }
@@ -19,7 +22,7 @@ public:
       k = x;
    }
    void showk() { cout << k << " "
-                       << "\n"; }
+                       << i << "\n"; }
 };
 int main()
 {
