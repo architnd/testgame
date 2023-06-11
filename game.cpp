@@ -74,29 +74,31 @@ int main()
    SDL_Event event;
    while (1)
    {
-      SDL_PollEvent(&event);
-      if (event.type == SDL_QUIT)
+      if (SDL_PollEvent(&event))
       {
-         break;
+         if (event.type == SDL_QUIT)
+         {
+            break;
+         }
+         else if (event.type == SDL_KEYDOWN)
+         {
+            if (event.key.keysym.sym == SDLK_UP)
+            {
+            }
+            else if (event.key.keysym.sym == SDLK_DOWN)
+            {
+            }
+            else if (event.key.keysym.sym == SDLK_LEFT)
+            {
+               c1.Break();
+            }
+            else if (event.key.keysym.sym == SDLK_RIGHT)
+            {
+               c1.Accelerate();
+            }
+         }
+         c1.Show();
       }
-      else if (event.type == SDL_KEYDOWN)
-      {
-         if (event.key.keysym.sym == SDLK_UP)
-         {
-         }
-         else if (event.key.keysym.sym == SDLK_DOWN)
-         {
-         }
-         else if (event.key.keysym.sym == SDLK_LEFT)
-         {
-            c1.Break();
-         }
-         else if (event.key.keysym.sym == SDLK_RIGHT)
-         {
-            c1.Accelerate();
-         }
-      }
-      c1.Show();
    }
    SDL_DestroyRenderer(renderer);
    SDL_DestroyWindow(window);
