@@ -8,9 +8,21 @@
 
 using namespace std;
 
-class Car
+struct ICar
 {
-private:
+    virtual ~ICar() = default;
+    virtual void Start() = 0;
+    virtual void Stop() = 0;
+    virtual void Break() = 0;
+    virtual void Accelerate() = 0;
+    virtual void Show() = 0;
+    virtual void ChangeCar(int i) = 0;
+};
+
+class Car : virtual public ICar
+{
+protected:
+    int i;
     int speed_;
     SDL_Renderer *renderer_;
     SDL_Surface *imageSurface_;
@@ -26,24 +38,21 @@ public:
         imageSurface_ = IMG_Load("Car.png");
         texture_ = SDL_CreateTextureFromSurface(renderer_, imageSurface_);
         destRect_.x = 100; // Initial X-coordinate
-        destRect_.y = 100; // Initial Y-coordinate
+        destRect_.y = 260; // Initial Y-coordinate
         destRect_.w = 100; //imageSurface_->w; // Width
         destRect_.h = 100; //imageSurface_->h; // Height
     }
-    ~Car()
-    {
-        //cout << "I am a Destructor\n";
-    }
-    void Start()
+    ~Car() override = default;
+    void Start() override
     {
         //cout << "Start\n";
     }
-    void Stop()
+    void Stop() override
     {
         //cout << "Stop\n";
         speed_ = 0;
     }
-    void Break()
+    void Break() override
     {
         //cout << "Break\n";
         if (speed_ > 0)
@@ -52,37 +61,100 @@ public:
         }
         destRect_.x -= 2;
     }
-    void Accelerate()
+    void Accelerate() override
     {
         // cout << "Accelerate\n";
         speed_ = speed_ + 5;
         destRect_.x += 2;
     }
-    void Show()
+    void Show() override
     {
-        SDL_RenderClear(renderer_);
+        //SDL_RenderClear(renderer_);
         SDL_RenderCopy(renderer_, texture_, NULL, &destRect_);
         SDL_RenderPresent(renderer_);
     }
-    void ChangeCar1()
+    void ChangeCar(int i) override
+    {
+        if (i == 1)
+        {
+            imageSurface_ = IMG_Load("Car.png");
+            texture_ = SDL_CreateTextureFromSurface(renderer_, imageSurface_);
+        }
+        else if (i == 2)
+        {
+            imageSurface_ = IMG_Load("Car2.png");
+            texture_ = SDL_CreateTextureFromSurface(renderer_, imageSurface_);  
+        }
+        else if (i == 3)
+        {
+            imageSurface_ = IMG_Load("");
+            texture_ = SDL_CreateTextureFromSurface(renderer_, imageSurface_);
+        }
+    }
+    /*
+    void ChangeCar1() override
     {
         imageSurface_ = IMG_Load("Car.png");
         texture_ = SDL_CreateTextureFromSurface(renderer_, imageSurface_);
     }
-    void ChangeCar2()
+    void ChangeCar2() override
     {
         imageSurface_ = IMG_Load("Car2.png");
         texture_ = SDL_CreateTextureFromSurface(renderer_, imageSurface_);
     }
-    void ChangeCar3()
+    void ChangeCar3() override
     {
         imageSurface_ = IMG_Load("");
         texture_ = SDL_CreateTextureFromSurface(renderer_, imageSurface_);
     }
-    void test()
+    */
+};
+
+class Formula1 : virtual public Car
+{
+public:
+    Formula1(SDL_Renderer *renderer)
+        : Car(renderer)
     {
     }
+    ~Formula1() override = default;
+    void Break() override
+    {
+        //cout << "Break\n";
+        if (speed_ > 0)
+        {
+            speed_ = speed_ - 5;
+        }
+        destRect_.x -= 4;
+    }
+    void Accelerate() override
+    {
+        // cout << "Accelerate\n";
+        speed_ = speed_ + 5;
+        destRect_.x += 4;
+    }
 };
+
+/*
+class Car : public iCar
+{
+public:
+    Car(SDL_Renderer *renderer)
+    {
+        speed_ = 0;
+        renderer_ = renderer;
+        imageSurface_ = IMG_Load("Car.png");
+        texture_ = SDL_CreateTextureFromSurface(renderer_, imageSurface_);
+        destRect_.x = 100; // Initial X-coordinate
+        destRect_.y = 260; // Initial Y-coordinate
+        destRect_.w = 100; //imageSurface_->w; // Width
+        destRect_.h = 100; //imageSurface_->h; // Height
+    }
+    ~Car()
+    {
+    }    
+};
+*/
 /*
 int main()
 {
@@ -241,6 +313,7 @@ void drawMenu()
 
 int main(int argc, char *argv[])
 {
+#if 1
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -256,7 +329,7 @@ int main(int argc, char *argv[])
     }
 
     // Create window
-    window = SDL_CreateWindow("SDL Menu", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("SDL Menu", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, /*SCREEN_WIDTH*/ 800, /*SCREEN_HEIGHT*/ 600, SDL_WINDOW_SHOWN);
     if (window == NULL)
     {
         printf("Window creation failed. SDL Error: %s\n", SDL_GetError());
@@ -284,7 +357,7 @@ int main(int argc, char *argv[])
     int quit = 0;
     while (!quit)
     {
-        
+
         while (SDL_PollEvent(&event) != 0)
         {
             if (event.type == SDL_QUIT)
@@ -314,15 +387,20 @@ int main(int argc, char *argv[])
                 case SDLK_KP_ENTER:
                     if (selectedOption == 0)
                     {
-                        //SDL_Init(SDL_INIT_VIDEO);
+                        SDL_Init(SDL_INIT_VIDEO);
                         //SDL_Window *window = SDL_CreateWindow("My Car Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_FULLSCREEN);
                         //SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
-                        Car c1(renderer);
+                        SDL_Surface *image = SDL_LoadBMP("image.bmp");
+                        SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, image);
+                        //Car c1(renderer);
+                        Formula1 c1(renderer);
                         c1.Show();
+                        
                         while (1)
                         {
                             if (SDL_PollEvent(&event))
                             {
+                                
                                 if (event.type == SDL_QUIT)
                                 {
                                     break;
@@ -345,27 +423,34 @@ int main(int argc, char *argv[])
                                     }
                                     else if (event.key.keysym.sym == SDLK_1)
                                     {
-                                        c1.ChangeCar1();
+                                        c1.ChangeCar(1);
                                     }
                                     else if (event.key.keysym.sym == SDLK_2)
                                     {
-                                        c1.ChangeCar2();
+                                        c1.ChangeCar(2);
                                     }
                                     else if (event.key.keysym.sym == SDLK_3)
                                     {
-                                        c1.ChangeCar3();
+                                        c1.ChangeCar(3);
                                     }
                                     else if (event.key.keysym.sym == SDLK_ESCAPE)
                                     {
-                                        break;
+                                        SDL_RenderClear(renderer);
+                                        drawMenu();
                                     }
                                 }
+                                SDL_RenderCopy(renderer, texture, NULL, NULL);
+                                SDL_RenderPresent(renderer);
                                 c1.Show();
                             }
+                            
                         }
+
+                        SDL_DestroyTexture(texture);
+                        SDL_FreeSurface(image);
                         SDL_DestroyRenderer(renderer);
                         SDL_DestroyWindow(window);
-                        
+
                         break;
                     }
                 }
@@ -381,7 +466,10 @@ int main(int argc, char *argv[])
     SDL_DestroyWindow(window);
     TTF_Quit();
     SDL_Quit();
-
+#endif
+    //int a = 10;
+    //int *ptr = &a;
+    //cout <<  a << " " << *ptr << endl;
     return 0;
 }
 #endif
