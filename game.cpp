@@ -284,6 +284,7 @@ int main(int argc, char *argv[])
     int quit = 0;
     while (!quit)
     {
+        
         while (SDL_PollEvent(&event) != 0)
         {
             if (event.type == SDL_QUIT)
@@ -313,10 +314,10 @@ int main(int argc, char *argv[])
                 case SDLK_KP_ENTER:
                     if (selectedOption == 0)
                     {
-                        SDL_Init(SDL_INIT_VIDEO);
-                        SDL_Window *window = SDL_CreateWindow("My Car Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, 0);
-                        SDL_Renderer *renderer1 = SDL_CreateRenderer(window, -1, 0);
-                        Car c1(renderer1);
+                        //SDL_Init(SDL_INIT_VIDEO);
+                        //SDL_Window *window = SDL_CreateWindow("My Car Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_FULLSCREEN);
+                        //SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
+                        Car c1(renderer);
                         c1.Show();
                         while (1)
                         {
@@ -362,7 +363,7 @@ int main(int argc, char *argv[])
                                 c1.Show();
                             }
                         }
-                        SDL_DestroyRenderer(renderer1);
+                        SDL_DestroyRenderer(renderer);
                         SDL_DestroyWindow(window);
                         
                         break;
