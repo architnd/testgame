@@ -1,4 +1,3 @@
-#if 1
 #include <iostream>
 #include <list>
 #include <memory>
@@ -78,7 +77,7 @@ public:
         else if (i == 2)
         {
             imageSurface_ = IMG_Load("Car2.png");
-            texture_ = SDL_CreateTextureFromSurface(renderer_, imageSurface_);  
+            texture_ = SDL_CreateTextureFromSurface(renderer_, imageSurface_);
         }
         else if (i == 3)
         {
@@ -110,8 +109,6 @@ public:
         destRect_.x += 4;
     }
 };
-#endif
-#if 1
 // Menu constants
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
@@ -266,7 +263,7 @@ int main(int argc, char *argv[])
                             //SDL_RenderPresent(renderer);
                             c1.Show();
                             if (SDL_PollEvent(&event))
-                            {   
+                            {
                                 if (event.type == SDL_QUIT)
                                 {
                                     break;
@@ -305,7 +302,7 @@ int main(int argc, char *argv[])
                                     }
                                 }
                                 c1.Show();
-                            }  
+                            }
                         }
 
                         SDL_DestroyTexture(texture);
@@ -328,4 +325,3 @@ int main(int argc, char *argv[])
     SDL_Quit();
     return 0;
 }
-#endif
