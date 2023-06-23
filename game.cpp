@@ -87,7 +87,7 @@ public:
         }
         else if (i == 3)
         {
-            imageSurface_ = IMG_Load("");
+            imageSurface_ = IMG_Load("Car3.png");
             texture_ = SDL_CreateTextureFromSurface(renderer_, imageSurface_);
         }
     }
