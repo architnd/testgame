@@ -32,7 +32,6 @@ protected:
 public:
     Car(SDL_Renderer *renderer)
     {
-        //cout << "I am a Constructor\n";
         speed_ = 0;
         renderer_ = renderer;
         imageSurface_ = IMG_Load("Car.png");
@@ -45,16 +44,13 @@ public:
     ~Car() override = default;
     void Start() override
     {
-        //cout << "Start\n";
     }
     void Stop() override
     {
-        //cout << "Stop\n";
         speed_ = 0;
     }
     void Break() override
     {
-        //cout << "Break\n";
         if (speed_ > 0)
         {
             speed_ = speed_ - 5;
@@ -63,7 +59,6 @@ public:
     }
     void Accelerate() override
     {
-        // cout << "Accelerate\n";
         speed_ = speed_ + 5;
         destRect_.x += 2;
     }
@@ -91,23 +86,6 @@ public:
             texture_ = SDL_CreateTextureFromSurface(renderer_, imageSurface_);
         }
     }
-    /*
-    void ChangeCar1() override
-    {
-        imageSurface_ = IMG_Load("Car.png");
-        texture_ = SDL_CreateTextureFromSurface(renderer_, imageSurface_);
-    }
-    void ChangeCar2() override
-    {
-        imageSurface_ = IMG_Load("Car2.png");
-        texture_ = SDL_CreateTextureFromSurface(renderer_, imageSurface_);
-    }
-    void ChangeCar3() override
-    {
-        imageSurface_ = IMG_Load("");
-        texture_ = SDL_CreateTextureFromSurface(renderer_, imageSurface_);
-    }
-    */
 };
 
 class Formula1 : virtual public Car
@@ -120,7 +98,6 @@ public:
     ~Formula1() override = default;
     void Break() override
     {
-        //cout << "Break\n";
         if (speed_ > 0)
         {
             speed_ = speed_ - 5;
@@ -129,123 +106,12 @@ public:
     }
     void Accelerate() override
     {
-        // cout << "Accelerate\n";
         speed_ = speed_ + 5;
         destRect_.x += 4;
     }
 };
-
-/*
-class Car : public iCar
-{
-public:
-    Car(SDL_Renderer *renderer)
-    {
-        speed_ = 0;
-        renderer_ = renderer;
-        imageSurface_ = IMG_Load("Car.png");
-        texture_ = SDL_CreateTextureFromSurface(renderer_, imageSurface_);
-        destRect_.x = 100; // Initial X-coordinate
-        destRect_.y = 260; // Initial Y-coordinate
-        destRect_.w = 100; //imageSurface_->w; // Width
-        destRect_.h = 100; //imageSurface_->h; // Height
-    }
-    ~Car()
-    {
-    }    
-};
-*/
-/*
-int main()
-{
-    SDL_Init(SDL_INIT_VIDEO);
-    SDL_Window *window = SDL_CreateWindow("My Car Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, 0);
-
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
-    Car c1(renderer);
-    c1.Show();
-    SDL_Event event;
-    while (1)
-    {
-        if (SDL_PollEvent(&event))
-        {
-            if (event.type == SDL_QUIT)
-            {
-                break;
-            }
-            else if (event.type == SDL_KEYDOWN)
-            {
-                if (event.key.keysym.sym == SDLK_UP)
-                {
-                }
-                else if (event.key.keysym.sym == SDLK_DOWN)
-                {
-                }
-                else if (event.key.keysym.sym == SDLK_LEFT)
-                {
-                    c1.Break();
-                }
-                else if (event.key.keysym.sym == SDLK_RIGHT)
-                {
-                    c1.Accelerate();
-                }
-                else if (event.key.keysym.sym == SDLK_1)
-                {
-                    c1.ChangeCar1();
-                }
-                else if (event.key.keysym.sym == SDLK_2)
-                {
-                    c1.ChangeCar2();
-                }
-                else if (event.key.keysym.sym == SDLK_3)
-                {
-                    c1.ChangeCar3();
-                }
-                else if (event.key.keysym.sym == SDLK_4)
-                {
-                    break;
-                }
-            }
-            c1.Show();
-        }
-    }
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-    return 0;
-}
-*/
-#endif
-#if 0
-
-#include <iostream>
-#include <SDL2/SDL.h>
-#include <stdio.h>
-
-int main()
-{
-   SDL_Window *window;
-   SDL_Init(SDL_INIT_VIDEO);
-
-   window = SDL_CreateWindow
-   (
-      "An SDL2 window",
-      SDL_WINDOWPOS_UNDEFINED,
-      SDL_WINDOWPOS_UNDEFINED,
-      640,
-      480,
-      SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP
-   );
-   SDL_Delay(3000);
-   SDL_DestroyWindow(window);
-   SDL_Quit();
-   return 0;
-}
 #endif
 #if 1
-//#include <SDL2/SDL.h>
-//#include <SDL2/SDL_ttf.h>
-
 // Menu constants
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
@@ -400,8 +266,7 @@ int main(int argc, char *argv[])
                             //SDL_RenderPresent(renderer);
                             c1.Show();
                             if (SDL_PollEvent(&event))
-                            {
-                                
+                            {   
                                 if (event.type == SDL_QUIT)
                                 {
                                     break;
@@ -439,8 +304,6 @@ int main(int argc, char *argv[])
                                         break;
                                     }
                                 }
-                                //SDL_RenderCopy(renderer, texture, NULL, NULL);
-                                //SDL_RenderPresent(renderer);
                                 c1.Show();
                             }  
                         }
@@ -455,8 +318,6 @@ int main(int argc, char *argv[])
                 }
             }
         }
-
-        //drawMenu();
     }
 
     // Cleanup
