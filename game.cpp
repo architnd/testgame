@@ -397,7 +397,8 @@ int main(int argc, char *argv[])
                         while (1)
                         {
                             SDL_RenderCopy(renderer, texture, NULL, NULL);
-                            SDL_RenderPresent(renderer);
+                            //SDL_RenderPresent(renderer);
+                            c1.Show();
                             if (SDL_PollEvent(&event))
                             {
                                 
