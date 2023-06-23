@@ -313,7 +313,6 @@ void drawMenu()
 
 int main(int argc, char *argv[])
 {
-#if 1
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -357,7 +356,7 @@ int main(int argc, char *argv[])
     int quit = 0;
     while (!quit)
     {
-
+        drawMenu();
         while (SDL_PollEvent(&event) != 0)
         {
             if (event.type == SDL_QUIT)
@@ -387,17 +386,18 @@ int main(int argc, char *argv[])
                 case SDLK_KP_ENTER:
                     if (selectedOption == 0)
                     {
-                        SDL_Init(SDL_INIT_VIDEO);
+                        //SDL_Init(SDL_INIT_VIDEO);
                         //SDL_Window *window = SDL_CreateWindow("My Car Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_FULLSCREEN);
                         //SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
                         SDL_Surface *image = SDL_LoadBMP("image.bmp");
                         SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, image);
                         //Car c1(renderer);
                         Formula1 c1(renderer);
-                        c1.Show();
-                        
+                        //c1.Show();
                         while (1)
                         {
+                            SDL_RenderCopy(renderer, texture, NULL, NULL);
+                            SDL_RenderPresent(renderer);
                             if (SDL_PollEvent(&event))
                             {
                                 
@@ -435,21 +435,19 @@ int main(int argc, char *argv[])
                                     }
                                     else if (event.key.keysym.sym == SDLK_ESCAPE)
                                     {
-                                        SDL_RenderClear(renderer);
-                                        drawMenu();
+                                        break;
                                     }
                                 }
-                                SDL_RenderCopy(renderer, texture, NULL, NULL);
-                                SDL_RenderPresent(renderer);
+                                //SDL_RenderCopy(renderer, texture, NULL, NULL);
+                                //SDL_RenderPresent(renderer);
                                 c1.Show();
-                            }
-                            
+                            }  
                         }
 
                         SDL_DestroyTexture(texture);
                         SDL_FreeSurface(image);
-                        SDL_DestroyRenderer(renderer);
-                        SDL_DestroyWindow(window);
+                        //SDL_DestroyRenderer(renderer);
+                        //SDL_DestroyWindow(window);
 
                         break;
                     }
@@ -457,7 +455,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        drawMenu();
+        //drawMenu();
     }
 
     // Cleanup
@@ -466,10 +464,6 @@ int main(int argc, char *argv[])
     SDL_DestroyWindow(window);
     TTF_Quit();
     SDL_Quit();
-#endif
-    //int a = 10;
-    //int *ptr = &a;
-    //cout <<  a << " " << *ptr << endl;
     return 0;
 }
 #endif
