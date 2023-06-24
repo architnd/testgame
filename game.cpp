@@ -4,6 +4,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <math.h>
+//#include <SDL_rotozoom.h>
 
 using namespace std;
 
@@ -27,18 +29,20 @@ protected:
     SDL_Surface *imageSurface_;
     SDL_Texture *texture_;
     SDL_Rect destRect_;
+    double angle_;
 
 public:
     Car(SDL_Renderer *renderer)
     {
         speed_ = 0;
         renderer_ = renderer;
-        imageSurface_ = IMG_Load("Car.png");
+        imageSurface_ = IMG_Load("Car3.png");
         texture_ = SDL_CreateTextureFromSurface(renderer_, imageSurface_);
-        destRect_.x = 100; // Initial X-coordinate
-        destRect_.y = 260; // Initial Y-coordinate
+        destRect_.x = 960; // Initial X-coordinate
+        destRect_.y = 540; // Initial Y-coordinate
         destRect_.w = 100; //imageSurface_->w; // Width
         destRect_.h = 100; //imageSurface_->h; // Height
+        angle_ = 0.0;
     }
     ~Car() override = default;
     void Start() override
@@ -64,8 +68,20 @@ public:
     void Show() override
     {
         //SDL_RenderClear(renderer_);
-        SDL_RenderCopy(renderer_, texture_, NULL, &destRect_);
+        SDL_RenderCopyEx(renderer_, texture_, NULL, &destRect_, angle_, NULL, SDL_FLIP_NONE);
         SDL_RenderPresent(renderer_);
+    }
+    void TurnRight()
+    {
+        //double d = 90.0;
+        angle_ = 90.0;
+        destRect_.x += 4;
+    }
+    void TurnLeft()
+    {
+        angle_ = 270.0;
+        //double d = 90.0;
+        destRect_.x -= 4;
     }
     void ChangeCar(int i) override
     {
@@ -101,20 +117,23 @@ public:
         {
             speed_ = speed_ - 5;
         }
-        destRect_.x -= 4;
+        destRect_.y += 4;
+        angle_ = 180.0;
     }
     void Accelerate() override
     {
         speed_ = speed_ + 5;
-        destRect_.x += 4;
+        destRect_.y -= 4;
+        angle_ = 0.0;
+        //destRect_.x += cos(3.14)*4;
     }
 };
 // Menu constants
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
-#define MENU_WIDTH 200
-#define MENU_HEIGHT 300
-#define MENU_PADDING 20
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
+#define MENU_WIDTH 1200
+#define MENU_HEIGHT 900
+#define MENU_PADDING 100
 
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
@@ -191,7 +210,7 @@ int main(int argc, char *argv[])
     }
 
     // Create window
-    window = SDL_CreateWindow("SDL Menu", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, /*SCREEN_WIDTH*/ 800, /*SCREEN_HEIGHT*/ 600, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("SDL Menu", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, /*SCREEN_WIDTH*/ 1920, /*SCREEN_HEIGHT*/ 1080, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
     if (window == NULL)
     {
         printf("Window creation failed. SDL Error: %s\n", SDL_GetError());
@@ -207,7 +226,7 @@ int main(int argc, char *argv[])
     }
 
     // Load font
-    font = TTF_OpenFont("/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf", 24);
+    font = TTF_OpenFont("/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf", 42);
     if (font == NULL)
     {
         printf("Font loading failed. TTF Error: %s\n", TTF_GetError());
@@ -249,17 +268,23 @@ int main(int argc, char *argv[])
                 case SDLK_KP_ENTER:
                     if (selectedOption == 0)
                     {
+                        //SDL_Rect destRect;
                         //SDL_Init(SDL_INIT_VIDEO);
                         //SDL_Window *window = SDL_CreateWindow("My Car Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_FULLSCREEN);
                         //SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
-                        SDL_Surface *image = SDL_LoadBMP("image.bmp");
+                        SDL_Surface *image = IMG_Load("road.png");
                         SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, image);
+                        //destRect.x = 656; // Initial X-coordinat
+                        //destRect.y = 0; // Initial Y-coordinate
+                        //destRect.w = 609; //imageSurface_->w; // Width
+                        //destRect.h = 1080; //imageSurface_->h; // Height
                         //Car c1(renderer);
                         Formula1 c1(renderer);
                         //c1.Show();
                         while (1)
                         {
-                            SDL_RenderCopy(renderer, texture, NULL, NULL);
+                            SDL_RenderCopyEx(renderer, texture, NULL, /*&destRect*/NULL, 0.0, NULL, SDL_FLIP_NONE);
+                            //SDL_RenderCopy(renderer, texture, NULL, NULL);
                             //SDL_RenderPresent(renderer);
                             c1.Show();
                             if (SDL_PollEvent(&event))
@@ -272,17 +297,19 @@ int main(int argc, char *argv[])
                                 {
                                     if (event.key.keysym.sym == SDLK_UP)
                                     {
+                                        c1.Accelerate();
                                     }
                                     else if (event.key.keysym.sym == SDLK_DOWN)
                                     {
+                                        c1.Break();
                                     }
                                     else if (event.key.keysym.sym == SDLK_LEFT)
                                     {
-                                        c1.Break();
+                                        c1.TurnLeft();
                                     }
                                     else if (event.key.keysym.sym == SDLK_RIGHT)
                                     {
-                                        c1.Accelerate();
+                                        c1.TurnRight();
                                     }
                                     else if (event.key.keysym.sym == SDLK_1)
                                     {
@@ -301,7 +328,7 @@ int main(int argc, char *argv[])
                                         break;
                                     }
                                 }
-                                c1.Show();
+                                //c1.Show();
                             }
                         }
 
@@ -312,11 +339,15 @@ int main(int argc, char *argv[])
 
                         break;
                     }
+                    else if (selectedOption == 3)
+                    {
+                        goto exit;
+                    }
                 }
             }
         }
     }
-
+exit:
     // Cleanup
     TTF_CloseFont(font);
     SDL_DestroyRenderer(renderer);
