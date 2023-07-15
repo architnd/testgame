@@ -5,6 +5,7 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <math.h>
+#include <unistd.h>
 //#include <SDL_rotozoom.h>
 
 using namespace std;
@@ -38,10 +39,10 @@ public:
         renderer_ = renderer;
         imageSurface_ = IMG_Load("Car3.png");
         texture_ = SDL_CreateTextureFromSurface(renderer_, imageSurface_);
-        destRect_.x = 960; // Initial X-coordinate
+        destRect_.x = 885; // Initial X-coordinate
         destRect_.y = 540; // Initial Y-coordinate
-        destRect_.w = 100; //imageSurface_->w; // Width
-        destRect_.h = 100; //imageSurface_->h; // Height
+        destRect_.w = 150; //imageSurface_->w; // Width
+        destRect_.h = 150; //imageSurface_->h; // Height
         angle_ = 0.0;
     }
     ~Car() override = default;
@@ -73,15 +74,21 @@ public:
     }
     void TurnRight()
     {
-        //double d = 90.0;
-        angle_ = 90.0;
-        destRect_.x += 4;
+        angle_ = 20.0;
+        if (destRect_.x < 1115)
+        {
+            //double d = 90.0;
+            destRect_.x += 8;
+        }
     }
     void TurnLeft()
     {
-        angle_ = 270.0;
-        //double d = 90.0;
-        destRect_.x -= 4;
+        angle_ = 340.0;
+        if (destRect_.x > 655)
+        {
+            //double d = 90.0;
+            destRect_.x -= 8;
+        }
     }
     void ChangeCar(int i) override
     {
@@ -113,18 +120,18 @@ public:
     ~Formula1() override = default;
     void Break() override
     {
-        if (speed_ > 0)
-        {
-            speed_ = speed_ - 5;
-        }
-        destRect_.y += 4;
-        angle_ = 180.0;
+        angle_ = 0.0;
+        //if (speed_ > 0)
+        //{
+        //    speed_ = speed_ - 5;
+        //}
+        //destRect_.y += 8;
     }
     void Accelerate() override
     {
-        speed_ = speed_ + 5;
-        destRect_.y -= 4;
         angle_ = 0.0;
+        //speed_ = speed_ + 5;
+        //destRect_.y -= 8;
         //destRect_.x += cos(3.14)*4;
     }
 };
@@ -192,6 +199,57 @@ void drawMenu()
 
     SDL_RenderPresent(renderer);
 }
+class Road
+{
+    SDL_Surface *image;
+    SDL_Texture *texture;
+    SDL_Rect destRect;
+
+public:
+    Road()
+    {
+        image = IMG_Load("road3.png");
+        texture = SDL_CreateTextureFromSurface(renderer, image);
+        destRect.x = 0;     // Initial X-coordinat
+        destRect.y = -1000; // Initial Y-coordinate
+        destRect.w = 1920;  //imageSurface_->w; // Width
+        destRect.h = 3000;  //imageSurface_->h; // Height
+    }
+    void ShowRoad()
+    {
+        SDL_RenderCopyEx(renderer, texture, NULL, &destRect /*NULL*/, 0.0, NULL, SDL_FLIP_NONE);
+        //SDL_RenderPresent(renderer);
+        //SDL_DestroyTexture(texture);
+        //SDL_FreeSurface(image);
+    }
+    void Accelerate1()
+    {
+        if (destRect.y != -10)
+        {
+            destRect.y += 10;
+        }
+        else if (destRect.y = -10)
+        {
+            destRect.y -= 1090;
+        }
+    }
+    void Break1()
+    {
+        if (destRect.y != -1910)
+        {
+            destRect.y -= 10;
+        }
+        else if (destRect.y = -1910)
+        {
+            destRect.y += 1070;
+        }
+    }
+    void timer()
+    {
+            Accelerate1();
+            sleep(1);
+    }
+};
 
 int main(int argc, char *argv[])
 {
@@ -268,22 +326,18 @@ int main(int argc, char *argv[])
                 case SDLK_KP_ENTER:
                     if (selectedOption == 0)
                     {
-                        //SDL_Rect destRect;
+                        Road road;
                         //SDL_Init(SDL_INIT_VIDEO);
                         //SDL_Window *window = SDL_CreateWindow("My Car Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_FULLSCREEN);
                         //SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
-                        SDL_Surface *image = IMG_Load("road.png");
-                        SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, image);
-                        //destRect.x = 656; // Initial X-coordinat
-                        //destRect.y = 0; // Initial Y-coordinate
-                        //destRect.w = 609; //imageSurface_->w; // Width
-                        //destRect.h = 1080; //imageSurface_->h; // Height
                         //Car c1(renderer);
                         Formula1 c1(renderer);
                         //c1.Show();
                         while (1)
                         {
-                            SDL_RenderCopyEx(renderer, texture, NULL, /*&destRect*/NULL, 0.0, NULL, SDL_FLIP_NONE);
+                            road.ShowRoad();
+                            road.Accelerate1();
+                            //SDL_RenderCopyEx(renderer, texture, NULL, /*&destRect*/ NULL, 0.0, NULL, SDL_FLIP_NONE);
                             //SDL_RenderCopy(renderer, texture, NULL, NULL);
                             //SDL_RenderPresent(renderer);
                             c1.Show();
@@ -297,11 +351,14 @@ int main(int argc, char *argv[])
                                 {
                                     if (event.key.keysym.sym == SDLK_UP)
                                     {
-                                        c1.Accelerate();
+                                        //c1.Accelerate();
+                                        //road.Accelerate1();
+                                        //road.timer();
                                     }
                                     else if (event.key.keysym.sym == SDLK_DOWN)
                                     {
                                         c1.Break();
+                                        road.Break1();
                                     }
                                     else if (event.key.keysym.sym == SDLK_LEFT)
                                     {
@@ -332,8 +389,8 @@ int main(int argc, char *argv[])
                             }
                         }
 
-                        SDL_DestroyTexture(texture);
-                        SDL_FreeSurface(image);
+                        //SDL_DestroyTexture(texture);
+                        //SDL_FreeSurface(image);
                         //SDL_DestroyRenderer(renderer);
                         //SDL_DestroyWindow(window);
 
